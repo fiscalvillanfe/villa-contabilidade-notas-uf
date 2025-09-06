@@ -87,13 +87,54 @@ input,select{
   padding:26px;
   color:var(--primary);
   margin-bottom:14px;
-  transition:background .2s,border-color .2s;
+  transition:background .2s,border-color .2s, box-shadow .2s, transform .18s;
 }
 .file:hover{background:rgba(139,0,0,.05);border-color:var(--primary-hover)}
 .file input[type="file"]{
   position:absolute;inset:0;opacity:0;cursor:pointer;width:100%;height:100%;
 }
 .file span{pointer-events:none;font-weight:600}
+
+/* ===== Upload feedback / animações ===== */
+.file.dragover{
+  background: rgba(139,0,0,.08);
+  border-color: var(--primary-hover);
+  box-shadow: 0 0 0 3px rgba(178,34,34,.15) inset;
+  animation: pulse 0.9s ease-in-out infinite;
+}
+@keyframes pulse{ 0%{transform:scale(1)} 50%{transform:scale(1.01)} 100%{transform:scale(1)} }
+
+.file.filled{
+  border-color:#22c55e;
+  box-shadow:0 0 0 3px rgba(34,197,94,.15) inset, var(--shadow);
+  background:#f6fffa;
+}
+.file.anim{ animation: pop-in .18s ease; }
+@keyframes pop-in{ 0%{transform:scale(0.98)} 100%{transform:scale(1)} }
+
+.file.filled::after{
+  content:""; position:absolute; right:10px; top:10px;
+  width:14px; height:7px; border:3px solid #22c55e;
+  border-top:0; border-right:0; transform: rotate(-45deg);
+}
+
+/* Nome do arquivo e contador */
+.file .file-meta{
+  margin-top:8px; display:flex; align-items:center; justify-content:center; gap:8px;
+}
+.file .name{
+  max-width:90%;
+  white-space:nowrap;
+  overflow:hidden;
+  text-overflow:ellipsis;
+  font-weight:600;
+  color:#333;
+}
+.file .count{
+  font-size:12px; color:#666;
+  padding:2px 6px; border:1px solid var(--border);
+  border-radius:999px; background:#fff;
+}
 
 /* Stats & lists */
 .stats-grid{
