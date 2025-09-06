@@ -80,6 +80,54 @@ const tableBox = byId('tableBox');
 const dlAllBtn = byId('dlAll');
 const dlNonBtn = byId('dlNon');
 
+// ===== Upload UI (animação + nome com reticências + +N) =====
+function wireUploadUI(labelEl, inputEl){
+  function refresh(){
+    const span = labelEl.querySelector('span');
+    const list = Array.from(inputEl.files || []);
+    if (!span) return;
+
+    if (list.length === 0){
+      labelEl.classList.remove('filled');
+      span.innerHTML = 'Arraste seu ZIP/XML aqui ou clique para selecionar';
+      return;
+    }
+
+    const first = list[0]?.name || "arquivo";
+    const extra = Math.max(0, list.length - 1);
+    const tooltip = list.slice(0,5).map(f=>f.name).join('\n') + (list.length>5 ? `\n+${list.length-5} mais...` : '');
+
+    span.innerHTML = `
+      <div class="file-meta">
+        <span class="name" title="${tooltip.replace(/"/g,'&quot;')}">${first}</span>
+        ${extra>0 ? `<span class="count">+${extra}</span>` : ``}
+      </div>
+    `;
+
+    labelEl.classList.add('filled','anim');
+    setTimeout(()=> labelEl.classList.remove('anim'), 220);
+  }
+
+  // mudança via seletor
+  inputEl.addEventListener('change', refresh);
+
+  // highlight de drag & drop
+  ['dragenter','dragover'].forEach(ev=>{
+    labelEl.addEventListener(ev, e=>{ e.preventDefault(); labelEl.classList.add('dragover'); });
+  });
+  ['dragleave','drop'].forEach(ev=>{
+    labelEl.addEventListener(ev, e=>{ e.preventDefault(); labelEl.classList.remove('dragover'); });
+  });
+  labelEl.addEventListener('drop', e=>{
+    e.preventDefault();
+    const dt = e.dataTransfer;
+    if (dt && dt.files && dt.files.length){
+      inputEl.files = dt.files;
+      refresh();
+    }
+  });
+}
+
 function deriveBaseName(fileList){
   if (!fileList || fileList.length===0) return 'resultado';
   let name = fileList[0].name || 'resultado';
@@ -281,6 +329,10 @@ document.addEventListener('DOMContentLoaded', () => {
   const fileInput = document.getElementById('fileInput');
   const processBtn = document.getElementById('processBtn');
   const reportArea = document.getElementById('reportArea');
+
+  // Conecta animação/feedback de upload
+  const uploadLabel = document.querySelector('label.file');
+  if (uploadLabel && fileInput) wireUploadUI(uploadLabel, fileInput);
 
   processBtn.addEventListener('click', async () => {
     const files = fileInput.files;
