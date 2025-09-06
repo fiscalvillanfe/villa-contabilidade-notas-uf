@@ -1,0 +1,77 @@
+<!doctype html>
+<html lang="pt-br">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Villa Contabilidade — NF-e</title>
+
+  <!-- Favicon -->
+  <link rel="icon" type="image/png" href="https://i.imgur.com/kVJgNMN.png">
+
+  <link rel="stylesheet" href="style.css">
+  <!-- libs -->
+  <script src="https://cdn.jsdelivr.net/npm/jszip@3.10.1/dist/jszip.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/file-saver@2.0.5/dist/FileSaver.min.js"></script>
+</head>
+<body>
+  <main class="wrapper">
+    <!-- APP (sem login) -->
+    <section id="appCard">
+      <div class="topbar">
+        <h2>Gerenciador de Notas Fiscais</h2>
+      </div>
+
+      <div class="card">
+        <label class="file">
+          <input id="fileInput" type="file" multiple accept=".zip,.xml">
+          <span>Arraste seu ZIP/XML aqui ou clique para selecionar</span>
+        </label>
+
+        <div class="form-grid thirds">
+          <label>
+            <span>Critério da UF</span>
+            <select id="criteria">
+              <option value="emit">Emitente</option>
+              <option value="dest" selected>Destinatário</option>
+            </select>
+          </label>
+
+          <label>
+            <span>Agrupar por</span>
+            <select id="companyKey">
+              <option value="dest" selected>Empresa DESTINATÁRIA</option>
+              <option value="emit">Empresa EMITENTE</option>
+            </select>
+          </label>
+
+          <label>
+            <span>UF alvo</span>
+            <input id="targetUF" value="MG" maxlength="2">
+          </label>
+        </div>
+
+        <button id="processBtn" class="btn primary">Processar</button>
+      </div>
+
+      <section id="reportArea" class="hidden">
+        <h3>Relatório</h3>
+        <div class="stats-grid" id="statsGrid"></div>
+
+        <div class="downloads">
+          <button id="dlAll" class="btn primary">Baixar tudo (ZIP)</button>
+          <button id="dlNon" class="btn secondary">Baixar só fora do estado (ZIP)</button>
+        </div>
+
+        <h3>Empresas detectadas</h3>
+        <div id="companiesBox" class="card compact"></div>
+
+        <h3>Notas fora do estado</h3>
+        <div id="tableBox" class="card compact"></div>
+      </section>
+    </section>
+  </main>
+
+  <!-- App logic -->
+  <script src="app.js"></script>
+</body>
+</html>
